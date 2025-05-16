@@ -11,4 +11,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Si usás PostgreSQL puede ser necesario instalar dependencias:
 # RUN apt-get update && apt-get install -y libpq-dev gcc
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver"]
