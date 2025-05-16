@@ -1,0 +1,207 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f1f3f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 350px;
+}
+
+h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 30px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+form button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.producto-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.producto-item input {
+    flex: 1;
+}
+
+.borrar-producto {
+    cursor: pointer;
+    font-size: 20px;
+    color: #dc3545;
+    transition: color 0.2s;
+}
+
+.borrar-producto:hover {
+    color: #a71d2a;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #f1f3f5;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+
+.user-header-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f1f3f5;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.user-links a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.user-links a:hover {
+    text-decoration: underline;
+}
+
+
+.caja-panel {
+    max-width: 1150px;
+    width: 95%;
+    padding: 40px;
+    font-size: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 12px 10px;
+    vertical-align: top;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+    text-align: left;
+}
+
+ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+@media screen and (max-width: 768px) {
+
+    body {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .login-box, .caja-panel {
+        padding: 20px 10px;
+        width: 100%;
+    }
+
+    .filtros-labels, .filtros-campos {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .filtro-label, .filtro-campo {
+        min-width: 100%;
+    }
+
+    .botonera {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .botonera button,
+    .botonera a {
+        width: 100%;
+        font-size: 16px;
+        height: 48px;
+    }
+
+    table {
+        font-size: 13px;
+        display: block;
+        overflow-x: auto;
+    }
+
+    th, td {
+        padding: 10px;
+        white-space: nowrap;
+    }
+
+    input, select {
+        font-size: 16px;
+        height: 44px;
+    }
+
+    .user-header-vertical {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 15px;
+    }
+
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <title>Panel de Caja</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="login-box caja-panel" style="max-width: 1000px;">
+        <h2>Panel de Caja</h2>
+
+        <div class="user-header-vertical">
+            <span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span>
+            <span class="user-links">
+                <a href="{% url 'password_change' %}">Cambiar contraseña 🔒</a> |
+                <a href="{% url 'logout' %}">Cerrar sesión ⏻</a>
+            </span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Tratamiento</th>
+                    <th>Consultorio</th>
+                    <th>Doctor</th>
+                    <th>Productos</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                    <tr style="vertical-align: top;">
+                        <td>{{ registro.nombre_paciente }}</td>
+                        <td>{{ registro.tratamiento.nombre }}</td>
+                        <td>{{ registro.consultorio.nombre }}</td>
+                        <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+                        <td>
+                            <ul style="padding-left: 18px; margin: 0;">
+                                {% for item in registro.productoutilizado_set.all %}
+                                    <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td style="text-align: center;">
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="registro_id" value="{{ registro.id }}">
+                                <button type="submit">Marcar como abonado</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;">No hay registros pendientes para hoy.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        <p style="text-align:center; margin-top: 20px;">
+            <a href="{% url 'historial' %}">Ver historial de abonados</a>
+        </p>
+    </div>
+</body>
+</html>

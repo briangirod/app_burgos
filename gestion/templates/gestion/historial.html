@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <title>Historial de Caja</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
+    <style>
+        .caja-panel {
+            max-width: 1150px;
+            width: 95%;
+            padding: 40px;
+            font-size: 15px;
+        }
+
+        .user-header-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .user-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .user-links a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px 10px;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+        }
+
+        .abonado-label {
+            white-space: nowrap;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            padding: 6px 10px;
+            height: fit-content;
+            margin-left: 20px;
+        }
+
+        .productos-contenedor {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .filtros-dividido {
+            margin-bottom: 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+
+
+        .filtro-label {
+            min-width: 190px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            height: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            padding-bottom: 6px;
+        }
+
+
+        .filtros-labels,
+        .filtros-campos {
+            display: flex;
+            justify-content: center;
+            gap: 30px;  /* ligeramente más compacto que 40px */
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        /* Aumentamos ancho base */
+        .filtro-campo {
+            min-width: 180px;   /* antes 140px */
+            flex: 0 0 200px;     /* ✅ Fuerza un ancho inicial uniforme pero flexible */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Uniformidad y estilo */
+        .filtro-campo select,
+        .filtro-campo input[type="date"] {
+            height: 42px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            width: 100%;
+            appearance: none;
+            background-color: white;
+        }
+
+
+        .botonera {
+            display: flex;
+            gap: 10px;
+        }
+
+        .botonera button,
+        .botonera a {
+            height: 40px;
+            padding: 0 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-azul {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .btn-azul:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-gris {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .btn-gris:hover {
+            background-color: #5a6268;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="login-box caja-panel">
+        <h2>Historial de productos abonados</h2>
+
+        <div class="user-header-vertical">
+            <span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span>
+            <span class="user-links">
+                <a href="{% url 'password_change' %}">Cambiar contraseña</a> |
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+            </span>
+        </div>
+
+        <!-- FILTROS -->
+        <form method="get" class="filtros-dividido">
+            <div class="filtros-labels">
+                <div class="filtro-label">Producto:</div>
+                <div class="filtro-label">Doctor:</div>
+                <div class="filtro-label">Desde:</div>
+                <div class="filtro-label">Hasta:</div>
+                <div class="filtro-label"></div>
+            </div>
+            <div class="filtros-campos">
+                <div class="filtro-campo">
+                    <select name="producto" id="producto">
+                        <option value="">-- Todos --</option>
+                        {% for p in productos %}
+                            <option value="{{ p.nombre }}" {% if p.nombre == producto_filtro %}selected{% endif %}>{{ p.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <select name="doctor" id="doctor">
+                        <option value="">-- Todos --</option>
+                        {% for d in doctores %}
+                            <option value="{{ d.id }}" {% if d.id == doctor_filtro %}selected{% endif %}>{{ d.get_full_name|default:d.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <input type="date" name="desde" id="desde" value="{{ desde }}">
+                </div>
+                <div class="filtro-campo">
+                    <input type="date" name="hasta" id="hasta" value="{{ hasta }}">
+                </div>
+                <div class="filtro-campo botonera">
+                    <button type="submit" class="btn-azul">Aplicar</button>
+                    <a href="{% url 'historial' %}" class="btn-gris">Limpiar</a>
+                </div>
+            </div>
+        </form>
+
+
+
+
+
+
+        <!-- TOTAL -->
+        {% with total=0 %}
+            {% for registro in registros %}
+                {% for item in registro.productoutilizado_set.all %}
+                    {% if producto_filtro|lower in item.producto.nombre|lower or not producto_filtro %}
+                        {% with total=total|add:item.cantidad %}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            <p><strong>Total de productos encontrados: {{ total }}</strong></p>
+        {% endwith %}
+
+        <!-- TABLA -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Tratamiento</th>
+                    <th>Consultorio</th>
+                    <th>Doctor</th>
+                    <th>Productos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                    <tr style="vertical-align: top;">
+                        <td>{{ registro.fecha }}</td>
+                        <td>{{ registro.nombre_paciente }}</td>
+                        <td>{{ registro.tratamiento.nombre }}</td>
+                        <td>{{ registro.consultorio.nombre }}</td>
+                        <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+                        <td>
+                            <div class="productos-contenedor">
+                                <ul>
+                                    {% for item in registro.productoutilizado_set.all %}
+                                        <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
+                                    {% endfor %}
+                                </ul>
+                                <span class="abonado-label">✔ Ya abonado</span>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" style="text-align:center;">No hay registros abonados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="text-align:center; margin-top: 20px;">
+            <a href="{% url 'panel_caja' %}">Volver al panel de caja</a>
+        </p>
+    </div>
+</body>
+</html>

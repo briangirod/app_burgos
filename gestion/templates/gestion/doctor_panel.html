@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <title>Panel del Doctor</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
+    <style>
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f1f3f5;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .user-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .user-links a:hover {
+            text-decoration: underline;
+        }
+
+        .producto-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .producto-item input {
+            flex: 1;
+        }
+
+        .borrar-producto {
+            cursor: pointer;
+            font-size: 20px;
+            color: #dc3545;
+            transition: color 0.2s;
+        }
+
+        .borrar-producto:hover {
+            color: #a71d2a;
+        }
+        .alert-mensaje {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+
+        .btn-historial {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 96%;
+        }
+        
+        .btn-historial:hover {
+            background-color: #218838;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="login-box" style="max-width: 1100px; width: 100%;">
+        
+        <div class="user-header user-header-vertical">
+            <div class="user-info">
+                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+            </div>
+            <div class="user-links">
+                <a href="{% url 'password_change' %}">Cambiar contraseña</a> |
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+            </div>
+        </div>
+
+        <h2>Panel del Doctor</h2>
+        {% if messages %}
+            <div class="alert-mensaje">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="nombre_paciente" placeholder="Nombre del Paciente" required>
+
+            <input list="lista_tratamientos" name="tratamiento_nombre" placeholder="Tratamiento realizado" required>
+            <datalist id="lista_tratamientos">
+                {% for t in tratamientos %}
+                    <option value="{{ t.nombre }}">
+                {% endfor %}
+            </datalist>
+
+            <input list="lista_consultorios" name="consultorio_nombre" placeholder="Consultorio" required>
+            <datalist id="lista_consultorios">
+                {% for c in consultorios %}
+                    <option value="{{ c.nombre }}">
+                {% endfor %}
+            </datalist>
+
+            <div id="productos">
+                <div class="producto-item">
+                    <input list="lista_productos" name="producto_nombre" placeholder="Producto utilizado">
+                    <input type="number" name="cantidad" min="1" placeholder="Cantidad">
+                    <span class="borrar-producto" onclick="borrarProducto(this)">🗑️</span>
+                </div>
+            </div>
+            <datalist id="lista_productos">
+                {% for p in productos %}
+                    <option value="{{ p.nombre }}">
+                {% endfor %}
+            </datalist>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <a href="{% url 'historial_doctor' %}" class="btn-historial">🧾 Ver historial de productos enviados</a>
+            </div>
+
+
+            <button type="button" onclick="agregarProducto()">Agregar otro producto</button>
+            <br><br>
+            <button type="submit">Enviar a Caja</button>
+        </form>
+    </div>
+
+    <script>
+        function agregarProducto() {
+            const contenedor = document.getElementById('productos');
+            const primero = contenedor.firstElementChild;
+            const nuevo = primero.cloneNode(true);
+
+            nuevo.querySelectorAll('input').forEach(input => input.value = '');
+            contenedor.appendChild(nuevo);
+        }
+
+        function borrarProducto(elemento) {
+            const contenedor = document.getElementById('productos');
+            const item = elemento.closest('.producto-item');
+            if (contenedor.children.length > 1) {
+                contenedor.removeChild(item);
+            } else {
+                alert("Debe haber al menos un producto.");
+            }
+        }
+    </script>
+</body>
+</html>
