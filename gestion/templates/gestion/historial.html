@@ -169,6 +169,19 @@
         .btn-gris:hover {
             background-color: #5a6268;
         }
+        
+        .tabla-scroll {
+            max-height: 500px; /* Ajustable para mostrar aprox. 10 filas */
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        /* Evita que se corte el ancho si hay scroll */
+        .tabla-scroll table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
         
     </style>
@@ -243,41 +256,43 @@
         {% endwith %}
 
         <!-- TABLA -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Paciente</th>
-                    <th>Tratamiento</th>
-                    <th>Consultorio</th>
-                    <th>Doctor</th>
-                    <th>Productos</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for registro in registros %}
-                    <tr style="vertical-align: top;">
-                        <td>{{ registro.fecha }}</td>
-                        <td>{{ registro.nombre_paciente }}</td>
-                        <td>{{ registro.tratamiento.nombre }}</td>
-                        <td>{{ registro.consultorio.nombre }}</td>
-                        <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
-                        <td>
-                            <div class="productos-contenedor">
-                                <ul>
-                                    {% for item in registro.productoutilizado_set.all %}
-                                        <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
-                                    {% endfor %}
-                                </ul>
-                                <span class="abonado-label">✔ Ya abonado</span>
-                            </div>
-                        </td>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Tratamiento</th>
+                        <th>Consultorio</th>
+                        <th>Doctor</th>
+                        <th>Productos</th>
                     </tr>
-                {% empty %}
-                    <tr><td colspan="6" style="text-align:center;">No hay registros abonados.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                        <tr style="vertical-align: top;">
+                            <td>{{ registro.fecha }}</td>
+                            <td>{{ registro.nombre_paciente }}</td>
+                            <td>{{ registro.tratamiento.nombre }}</td>
+                            <td>{{ registro.consultorio.nombre }}</td>
+                            <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+                            <td>
+                                <div class="productos-contenedor">
+                                    <ul>
+                                        {% for item in registro.productoutilizado_set.all %}
+                                            <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <span class="abonado-label">✔ Ya abonado</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No hay registros abonados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <p style="text-align:center; margin-top: 20px;">
             <a href="{% url 'panel_caja' %}">Volver al panel de caja</a>

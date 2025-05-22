@@ -1,0 +1,34 @@
+
+<!-- Panel de Estado de Doctores -->
+
+{% for doctor in doctores %}
+<tr>
+  <td>{{ doctor.get_full_name|default:doctor.username }}</td>
+  <td>
+    <span class="estado-doctor {{ doctor.estado_clase }}">{{ doctor.estado_display }}</span>
+  </td>
+</tr>
+{% endfor %}
+</table>
+
+<style>
+.estado-doctor {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  color: white;
+}
+.estado-disponible {
+  background-color: #28a745;
+}
+.estado-ausente {
+  background-color: #dc3545;
+}
+.estado-con-paciente {
+  background-color: #17a2b8;
+}
+.estado-desconectado {
+  background-color: #6c757d;
+}
+</style>
+

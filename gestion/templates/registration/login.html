@@ -1,22 +1,71 @@
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- PWA -->
+    <!-- PWA -->
     <link rel="manifest" href="{% static 'gestion/pwa/manifest.json' %}">
     <meta name="theme-color" content="#007bff">
 
-    <meta charset="UTF-8">
     <title>Ingreso a la Clínica</title>
     <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
+    <style>
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 14px;
+            color: #007bff;
+            user-select: none;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .error-alert {
+            background-color: #f8d7da;
+            color: #842029;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #f5c2c7;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .recuperar-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .recuperar-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .recuperar-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="login-box">
         <h2>Ingreso a la Clínica</h2>
+
+        {% if form.errors %}
+            <div class="error-alert">
+                Usuario o Contraseña incorrecta, vuelva a intentarlo
+            </div>
+        {% endif %}
+
         {% if messages %}
             <div id="mensaje-exito">
                 {% for message in messages %}
@@ -25,29 +74,45 @@
                     </p>
                 {% endfor %}
             </div>
-        
             <script>
                 setTimeout(function() {
-                    document.getElementById("mensaje-exito").style.display = "none";
+                    const msg = document.getElementById("mensaje-exito");
+                    if (msg) msg.style.display = "none";
                 }, 5000);
             </script>
         {% endif %}
-        
+
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="Usuario" required autofocus>
-            <input type="password" name="password" placeholder="Contraseña" required>
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Usuario" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Contraseña" required id="id_password">
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            </div>
+
             <button type="submit">Ingresar</button>
+
+            <div class="recuperar-link">
+                <a href="#">¿Recuperar mi contraseña?</a>
+            </div>
         </form>
     </div>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("{% static 'gestion/pwa/serviceworker.js' %}")
-      .then(function() {
-        console.log("Service Worker registrado con éxito");
-      });
-  }
-</script>
 
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("id_password");
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("{% static 'gestion/pwa/serviceworker.js' %}")
+                .then(function() {
+                    console.log("Service Worker registrado con éxito");
+                });
+        }
+    </script>
 </body>
 </html>

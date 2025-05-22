@@ -85,7 +85,7 @@ form button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f1f3f5;
+    background-color: #dfdfdf;
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 14px;

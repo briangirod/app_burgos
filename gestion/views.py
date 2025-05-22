@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Registro, ProductoUtilizado, Producto, Tratamiento, Consultorio
+from .models import Registro, ProductoUtilizado, Producto, Tratamiento, Consultorio, PacienteRecepcion, EstadoDoctor
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.db.models import Q
 from django.utils.dateparse import parse_date
 from django.contrib.auth.models import User, Group
+from django.http import JsonResponse, HttpResponse
+import json
+from django.template.loader import render_to_string
+from django.utils.timezone import now, localdate
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST
 
 @login_required
 def home(request):
@@ -112,3 +120,82 @@ def historial_caja(request):
 def historial_doctor(request):
     registros = Registro.objects.filter(doctor=request.user).order_by('-fecha')
     return render(request, 'gestion/doctor_historial.html', {'registros': registros})
+
+
+@login_required
+def caja_panel_ajax(request):
+    try:
+        # Fecha actual segura para SQLite
+        fecha_actual = localdate()
+
+        registros = Registro.objects.filter(fecha=fecha_actual, estado='para_abonar').order_by('-fecha')
+
+        html = render_to_string('gestion/_tabla_panel_caja.html', {'registros': registros}, request=request)
+        return JsonResponse({'html': html})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+@login_required
+def panel_recepcion(request):
+    if not request.user.groups.filter(name='Recepcion').exists():
+        return HttpResponseForbidden("No tenés permiso para acceder a este panel.")
+    return render(request, 'gestion/recepcion_panel.html')
+
+@login_required
+def estado_pacientes_ajax(request):
+    pacientes = PacienteRecepcion.objects.order_by('-fecha_ingreso')
+
+    grupo_doctores = Group.objects.get(name="Doctor")
+    doctores = User.objects.filter(groups=grupo_doctores)
+
+    for doctor in doctores:
+        estado = getattr(doctor, 'estado_doctor', None)
+        doctor.estado_display = estado.get_estado_display() if estado else 'Desconectado'
+        doctor.estado_clase = estado.estado_clase() if estado else 'estado-desconectado'
+
+    html = render_to_string('gestion/_tabla_pacientes.html', {
+        'pacientes': pacientes,
+        'doctores': doctores
+    })
+
+    return HttpResponse(html)
+
+
+
+
+@csrf_exempt
+@login_required
+def ingresar_paciente_ajax(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        PacienteRecepcion.objects.create(
+            nombre=data.get('nombre_apellido'),
+            dni=data.get('dni', ''),
+            fecha_nacimiento=data.get('fecha_nacimiento') or None,
+            telefono=data.get('telefono', ''),
+        )
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+@require_POST
+@login_required
+def eliminar_paciente(request, id):
+    paciente = get_object_or_404(PacienteRecepcion, id=id)
+    paciente.delete()
+    return HttpResponse(status=204)
+
+@require_POST
+@login_required
+def actualizar_estado_doctor(request):
+    data = json.loads(request.body)
+    nuevo_estado = data.get('estado')
+
+    if nuevo_estado not in dict(EstadoDoctor.ESTADOS):
+        return JsonResponse({'error': 'Estado inválido'}, status=400)
+
+    estado, _ = EstadoDoctor.objects.get_or_create(doctor=request.user)
+    estado.estado = nuevo_estado
+    estado.save()
+
+    return JsonResponse({'success': True})

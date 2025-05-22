@@ -101,6 +101,18 @@
         </div>
 
         <h2>Panel del Doctor</h2>
+
+        <!-- Selector de estado -->
+        <div style="margin-bottom: 20px;">
+            <label for="estado-doctor" style="font-weight: bold;">📍 Mi estado:</label>
+            <select id="estado-doctor" onchange="actualizarEstado()" style="padding: 6px 12px; border-radius: 6px; margin-left: 10px;">
+                <option value="disponible">🟢 Disponible</option>
+                <option value="ausente">🔴 Ausente</option>
+                <option value="con_paciente">🔵 Con paciente</option>
+                <option value="desconectado">⚪ Desconectado</option>
+            </select>
+            <span id="estado-feedback" style="margin-left: 15px; font-style: italic; color: green;"></span>
+        </div>
         {% if messages %}
             <div class="alert-mensaje">
                 {% for message in messages %}
@@ -170,6 +182,32 @@
                 alert("Debe haber al menos un producto.");
             }
         }
+        function actualizarEstado() {
+            const estado = document.getElementById("estado-doctor").value;
+        
+            fetch("{% url 'actualizar_estado_doctor' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ estado: estado })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const feedback = document.getElementById("estado-feedback");
+                if (data.success) {
+                    feedback.textContent = "Estado actualizado.";
+                    setTimeout(() => feedback.textContent = "", 3000);
+                } else {
+                    feedback.textContent = "Error al actualizar estado.";
+                }
+            })
+            .catch(() => {
+                document.getElementById("estado-feedback").textContent = "Error de conexión.";
+            });
+        }
+
     </script>
 </body>
 </html>

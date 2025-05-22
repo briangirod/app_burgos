@@ -1,0 +1,24 @@
+{% for registro in registros %}
+    <tr style="vertical-align: top;">
+        <td>{{ registro.nombre_paciente }}</td>
+        <td>{{ registro.tratamiento.nombre }}</td>
+        <td>{{ registro.consultorio.nombre }}</td>
+        <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+        <td>
+            <ul style="padding-left: 18px; margin: 0;">
+                {% for item in registro.productoutilizado_set.all %}
+                    <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td style="text-align: center;">
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="registro_id" value="{{ registro.id }}">
+                <button type="submit">Marcar como abonado</button>
+            </form>
+        </td>
+    </tr>
+{% empty %}
+    <tr><td colspan="6" style="text-align:center;">No hay registros pendientes para hoy.</td></tr>
+{% endfor %}

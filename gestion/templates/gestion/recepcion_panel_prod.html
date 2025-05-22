@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Panel de Recepción</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        .btn-success {
+            background-color: #198754;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-success:hover {
+            background-color: #157347;
+        }
+    </style>
+</head>
+<script>
+    let autoRefresh = true;
+    let interval = setInterval(refrescarTabla, 5000);
+
+    function refrescarTabla() {
+        fetch("{% url 'estado_pacientes_ajax' %}")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("tabla-recepcion-body").innerHTML = data;
+            });
+    }
+
+    function toggleAutoRefresh() {
+        const toggle = document.getElementById("toggle-refresh");
+        if (toggle.checked) {
+            autoRefresh = true;
+            interval = setInterval(refrescarTabla, 5000);
+        } else {
+            autoRefresh = false;
+            clearInterval(interval);
+        }
+    }
+</script>
+<body>
+<div class="login-box caja-panel" style="max-width: 1000px;">
+    <h2>Panel de Recepción</h2>
+
+    <div class="user-header-vertical">
+        <span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span>
+        <span class="user-links">
+            <a href="{% url 'password_change' %}">Cambiar contraseña</a> |
+            <a href="{% url 'logout' %}">Cerrar sesión</a>
+        </span>
+    </div>
+
+    <div style="margin: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+        <p style="text-align:center; margin-top: 20px; text-align: left">
+            <button onclick="abrirModal()" class="btn-success">➕ Agregar Paciente</button>
+        </p>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <label class="switch" title="Actualizar Tabla Automaticamente" style="justify-content: flex-end;">
+                <input type="checkbox" id="toggle-refresh" checked onchange="toggleAutoRefresh()">
+                <span class="slider round"></span>
+            </label>
+            <button onclick="refrescarTabla()" id="btn-manual" title="Refrescar tabla" type="button" class="btn-success" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                </svg>
+                <span>Refrescar</span>
+            </button>
+        </div>
+
+
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DNI</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th>Doctor</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-recepcion-body">
+            {% include 'gestion/_tabla_pacientes.html' %}
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>
+
+
+
