@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta charset="UTF-8">
-    <title>Panel del Doctor</title>
+    <title>Cambiar Contraseña</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
     <style>
@@ -27,7 +26,7 @@
         }
 
         .user-info::before {
-            content: "👨‍⚕️";
+            content: "🔒";
             font-size: 24px;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
@@ -144,36 +143,12 @@
             color: #007bff;
         }
 
-        .producto-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-
-        .producto-item input {
-            flex: 1;
-        }
-
-        .borrar-producto {
-            cursor: pointer;
-            font-size: 20px;
-            color: #dc3545;
-            transition: color 0.2s;
-        }
-
-        .borrar-producto:hover {
-            color: #a71d2a;
-        }
-        .alert-mensaje {
-            margin-bottom: 20px;
-        }
-
         .alert {
             padding: 12px 16px;
             border-radius: 6px;
             font-weight: bold;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .alert.success {
@@ -182,22 +157,102 @@
             border: 1px solid #c3e6cb;
         }
 
-
-        .btn-historial {
-            display: inline-block;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 16px;
-            font-size: 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            width: 96%;
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
-        
-        .btn-historial:hover {
-            background-color: #218838;
+
+        .password-requirements {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .password-requirements h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="password"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-1px);
         }
 
         /* Responsive Design */
@@ -241,12 +296,19 @@
                 margin: 10px;
                 width: calc(100% - 20px);
             }
-        }
 
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .form-group input[type="password"] {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-box" style="max-width: 1100px; width: 100%;">
+    <div class="login-box" style="max-width: 600px; width: 100%;">
         
         {% load usuario_tags %}
         <div class="user-header">
@@ -263,116 +325,58 @@
                 </button>
                 <div class="user-dropdown" id="userDropdown">
                     <a href="{% url 'perfil_usuario' %}">👤 Mi perfil</a>
-                    <a href="{% url 'password_change' %}">🔒 Cambiar contraseña</a>
+                    <a href="{% url 'home' %}">🏠 Volver al panel</a>
                     <a href="{% url 'logout' %}">🚪 Cerrar sesión</a>
                 </div>
             </div>
         </div>
 
-        <h2>Panel del Doctor</h2>
+        <h2>🔒 Cambiar Contraseña</h2>
 
-        <!-- Selector de estado - COMENTADO PARA VERSIÓN FUTURA -->
-        <!-- 
-        <div style="margin-bottom: 20px;">
-            <label for="estado-doctor" style="font-weight: bold;">📍 Mi estado:</label>
-            <select id="estado-doctor" onchange="actualizarEstado()" style="padding: 6px 12px; border-radius: 6px; margin-left: 10px;">
-                <option value="disponible">🟢 Disponible</option>
-                <option value="ausente">🔴 Ausente</option>
-                <option value="con_paciente">🔵 Con paciente</option>
-                <option value="desconectado">⚪ Desconectado</option>
-            </select>
-            <span id="estado-feedback" style="margin-left: 15px; font-style: italic; color: green;"></span>
-        </div>
-        -->
         {% if messages %}
-            <div class="alert-mensaje">
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
-        
+
+        <div class="password-requirements">
+            <h4>📋 Requisitos de la contraseña:</h4>
+            <ul>
+                <li>Mínimo 8 caracteres</li>
+                <li>Debe ser diferente a la contraseña actual</li>
+                <li>Se recomienda usar letras, números y símbolos</li>
+            </ul>
+        </div>
 
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="nombre_paciente" placeholder="Nombre del Paciente" required>
-
-            <input list="lista_tratamientos" name="tratamiento_nombre" placeholder="Tratamiento realizado" required>
-            <datalist id="lista_tratamientos">
-                {% for t in tratamientos %}
-                    <option value="{{ t.nombre }}">
-                {% endfor %}
-            </datalist>
-
-            <input list="lista_consultorios" name="consultorio_nombre" placeholder="Consultorio" required>
-            <datalist id="lista_consultorios">
-                {% for c in consultorios %}
-                    <option value="{{ c.nombre }}">
-                {% endfor %}
-            </datalist>
-
-            <select name="caja_destino" required style="padding: 12px; border-radius: 6px; margin-bottom: 15px; width: 100%;">
-                <option value="">🏥 Seleccionar Caja Destino</option>
-                {% for sector in sectores %}
-                    <option value="{{ sector.id }}">{{ sector.nombre }}</option>
-                {% endfor %}
-            </select>
-
-            <div id="productos">
-                <div class="producto-item">
-                    <input list="lista_productos" name="producto_nombre" placeholder="Producto utilizado">
-                    <input type="number" name="cantidad" min="1" placeholder="Cantidad">
-                    <span class="borrar-producto" onclick="borrarProducto(this)">🗑️</span>
-                </div>
-            </div>
-            <datalist id="lista_productos">
-                {% for p in productos %}
-                    <option value="{{ p.nombre }}">
-                {% endfor %}
-            </datalist>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <a href="{% url 'historial_doctor' %}" class="btn-historial">🧾 Ver historial de productos enviados</a>
+            
+            <div class="form-group">
+                <label for="current_password">🔐 Contraseña Actual:</label>
+                <input type="password" id="current_password" name="current_password" required 
+                       placeholder="Ingresa tu contraseña actual">
             </div>
 
+            <div class="form-group">
+                <label for="new_password">🆕 Nueva Contraseña:</label>
+                <input type="password" id="new_password" name="new_password" required 
+                       placeholder="Ingresa la nueva contraseña" minlength="8">
+            </div>
 
-            <button type="button" onclick="agregarProducto()">Agregar otro producto</button>
-            <br><br>
-            <button type="submit">Enviar a Caja</button>
+            <div class="form-group">
+                <label for="confirm_password">✅ Confirmar Nueva Contraseña:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required 
+                       placeholder="Confirma la nueva contraseña" minlength="8">
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">🔒 Cambiar Contraseña</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">❌ Cancelar</a>
+            </div>
         </form>
     </div>
 
     <script>
-        function agregarProducto() {
-            const contenedor = document.getElementById('productos');
-            const primero = contenedor.firstElementChild;
-            const nuevo = primero.cloneNode(true);
-
-            nuevo.querySelectorAll('input').forEach(input => input.value = '');
-            contenedor.appendChild(nuevo);
-        }
-
-        function borrarProducto(elemento) {
-            const contenedor = document.getElementById('productos');
-            const item = elemento.closest('.producto-item');
-            if (contenedor.children.length > 1) {
-                contenedor.removeChild(item);
-            } else {
-                alert("Debe haber al menos un producto.");
-            }
-        }
-        // Auto-ocultar mensajes de éxito después de 5 segundos
-        document.addEventListener('DOMContentLoaded', function() {
-            const successAlerts = document.querySelectorAll('.alert.success');
-            successAlerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.classList.add('fade-out');
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500); // Esperar a que termine la animación
-                }, 5000); // 5 segundos
-            });
-        });
-
         // Función para manejar el menú desplegable de usuario
         function toggleUserMenu() {
             const dropdown = document.getElementById('userDropdown');
@@ -394,35 +398,30 @@
             }
         });
 
-        // FUNCIÓN COMENTADA PARA VERSIÓN FUTURA - Estado del doctor
-        /*
-        function actualizarEstado() {
-            const estado = document.getElementById("estado-doctor").value;
-        
-            fetch("/doctor/actualizar_estado/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: JSON.stringify({ estado: estado })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const feedback = document.getElementById("estado-feedback");
-                if (data.success) {
-                    feedback.textContent = "Estado actualizado.";
-                    setTimeout(() => feedback.textContent = "", 3000);
-                } else {
-                    feedback.textContent = "Error al actualizar estado.";
-                }
-            })
-            .catch(() => {
-                document.getElementById("estado-feedback").textContent = "Error de conexión.";
+        // Auto-ocultar mensajes de éxito después de 5 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
             });
-        }
-        */
+        });
 
+        // Validación de contraseñas en tiempo real
+        document.getElementById('confirm_password').addEventListener('input', function() {
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = this.value;
+            
+            if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#e9ecef';
+            }
+        });
     </script>
 </body>
 </html>

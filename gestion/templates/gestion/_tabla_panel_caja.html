@@ -1,24 +1,44 @@
+{% load usuario_tags %}
 {% for registro in registros %}
-    <tr style="vertical-align: top;">
-        <td>{{ registro.nombre_paciente }}</td>
-        <td>{{ registro.tratamiento.nombre }}</td>
-        <td>{{ registro.consultorio.nombre }}</td>
-        <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+    <tr>
         <td>
-            <ul style="padding-left: 18px; margin: 0;">
+            <div class="patient-name">{{ registro.nombre_paciente }}</div>
+        </td>
+        <td>
+            <div class="treatment-info">{{ registro.tratamiento.nombre }}</div>
+        </td>
+        <td>
+            <div class="treatment-info">{{ registro.consultorio.nombre }}</div>
+        </td>
+        <td>
+            <span class="doctor-info">{{ registro.doctor|nombre_completo }}</span>
+        </td>
+        <td>
+            <ul class="products-list">
                 {% for item in registro.productoutilizado_set.all %}
-                    <li>{{ item.producto.nombre }} ({{ item.cantidad }})</li>
+                    <li>{{ item.producto.nombre }} <strong>({{ item.cantidad }})</strong></li>
                 {% endfor %}
             </ul>
+        </td>
+        <td>
+            <span class="origin-badge">{{ registro.caja_destino.nombre }}</span>
         </td>
         <td style="text-align: center;">
             <form method="post" style="display:inline;">
                 {% csrf_token %}
                 <input type="hidden" name="registro_id" value="{{ registro.id }}">
-                <button type="submit">Marcar como abonado</button>
+                <button type="submit" class="action-btn">✅ Marcar Abonado</button>
             </form>
         </td>
     </tr>
 {% empty %}
-    <tr><td colspan="6" style="text-align:center;">No hay registros pendientes para hoy.</td></tr>
+    <tr>
+        <td colspan="7">
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-text">No hay registros pendientes</div>
+                <div class="empty-state-subtext">Todos los pagos del día han sido procesados</div>
+            </div>
+        </td>
+    </tr>
 {% endfor %}

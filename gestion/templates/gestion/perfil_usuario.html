@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta charset="UTF-8">
-    <title>Panel del Doctor</title>
+    <title>Mi Perfil</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
     <style>
@@ -27,7 +26,7 @@
         }
 
         .user-info::before {
-            content: "👨‍⚕️";
+            content: "👤";
             font-size: 24px;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
@@ -144,62 +143,6 @@
             color: #007bff;
         }
 
-        .producto-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-
-        .producto-item input {
-            flex: 1;
-        }
-
-        .borrar-producto {
-            cursor: pointer;
-            font-size: 20px;
-            color: #dc3545;
-            transition: color 0.2s;
-        }
-
-        .borrar-producto:hover {
-            color: #a71d2a;
-        }
-        .alert-mensaje {
-            margin-bottom: 20px;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-
-        .btn-historial {
-            display: inline-block;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 16px;
-            font-size: 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            width: 96%;
-        }
-        
-        .btn-historial:hover {
-            background-color: #218838;
-        }
-
         /* Responsive Design */
         @media screen and (max-width: 768px) {
             .user-header {
@@ -243,10 +186,23 @@
             }
         }
 
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box" style="max-width: 1100px; width: 100%;">
+    <div class="login-box" style="max-width: 600px; width: 100%;">
         
         {% load usuario_tags %}
         <div class="user-header">
@@ -262,114 +218,58 @@
                     </div>
                 </button>
                 <div class="user-dropdown" id="userDropdown">
-                    <a href="{% url 'perfil_usuario' %}">👤 Mi perfil</a>
-                    <a href="{% url 'password_change' %}">🔒 Cambiar contraseña</a>
+                    <a href="{% url 'home' %}">🏠 Volver al panel</a>
                     <a href="{% url 'logout' %}">🚪 Cerrar sesión</a>
                 </div>
             </div>
         </div>
 
-        <h2>Panel del Doctor</h2>
+        <h2>Mi Perfil</h2>
 
-        <!-- Selector de estado - COMENTADO PARA VERSIÓN FUTURA -->
-        <!-- 
-        <div style="margin-bottom: 20px;">
-            <label for="estado-doctor" style="font-weight: bold;">📍 Mi estado:</label>
-            <select id="estado-doctor" onchange="actualizarEstado()" style="padding: 6px 12px; border-radius: 6px; margin-left: 10px;">
-                <option value="disponible">🟢 Disponible</option>
-                <option value="ausente">🔴 Ausente</option>
-                <option value="con_paciente">🔵 Con paciente</option>
-                <option value="desconectado">⚪ Desconectado</option>
-            </select>
-            <span id="estado-feedback" style="margin-left: 15px; font-style: italic; color: green;"></span>
-        </div>
-        -->
         {% if messages %}
-            <div class="alert-mensaje">
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
-        
 
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="nombre_paciente" placeholder="Nombre del Paciente" required>
-
-            <input list="lista_tratamientos" name="tratamiento_nombre" placeholder="Tratamiento realizado" required>
-            <datalist id="lista_tratamientos">
-                {% for t in tratamientos %}
-                    <option value="{{ t.nombre }}">
-                {% endfor %}
-            </datalist>
-
-            <input list="lista_consultorios" name="consultorio_nombre" placeholder="Consultorio" required>
-            <datalist id="lista_consultorios">
-                {% for c in consultorios %}
-                    <option value="{{ c.nombre }}">
-                {% endfor %}
-            </datalist>
-
-            <select name="caja_destino" required style="padding: 12px; border-radius: 6px; margin-bottom: 15px; width: 100%;">
-                <option value="">🏥 Seleccionar Caja Destino</option>
-                {% for sector in sectores %}
-                    <option value="{{ sector.id }}">{{ sector.nombre }}</option>
-                {% endfor %}
-            </select>
-
-            <div id="productos">
-                <div class="producto-item">
-                    <input list="lista_productos" name="producto_nombre" placeholder="Producto utilizado">
-                    <input type="number" name="cantidad" min="1" placeholder="Cantidad">
-                    <span class="borrar-producto" onclick="borrarProducto(this)">🗑️</span>
-                </div>
-            </div>
-            <datalist id="lista_productos">
-                {% for p in productos %}
-                    <option value="{{ p.nombre }}">
-                {% endfor %}
-            </datalist>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <a href="{% url 'historial_doctor' %}" class="btn-historial">🧾 Ver historial de productos enviados</a>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="usuario" style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre de Usuario:</label>
+                <input type="text" id="usuario" value="{{ request.user.username }}" disabled style="background-color: #f8f9fa; color: #6c757d;">
             </div>
 
+            <div style="margin-bottom: 15px;">
+                <label for="nombre" style="display: block; margin-bottom: 5px; font-weight: bold;">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="{{ perfil.nombre }}" placeholder="Ingresa tu nombre" required>
+            </div>
 
-            <button type="button" onclick="agregarProducto()">Agregar otro producto</button>
-            <br><br>
-            <button type="submit">Enviar a Caja</button>
+            <div style="margin-bottom: 15px;">
+                <label for="apellido" style="display: block; margin-bottom: 5px; font-weight: bold;">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" value="{{ perfil.apellido }}" placeholder="Ingresa tu apellido" required>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="sector" style="display: block; margin-bottom: 5px; font-weight: bold;">Sector:</label>
+                <input type="text" id="sector" value="{{ perfil.sector.nombre }}" disabled style="background-color: #f8f9fa; color: #6c757d;">
+            </div>
+
+            <button type="submit" style="width: 100%;">Actualizar Perfil</button>
         </form>
     </div>
 
     <script>
-        function agregarProducto() {
-            const contenedor = document.getElementById('productos');
-            const primero = contenedor.firstElementChild;
-            const nuevo = primero.cloneNode(true);
-
-            nuevo.querySelectorAll('input').forEach(input => input.value = '');
-            contenedor.appendChild(nuevo);
-        }
-
-        function borrarProducto(elemento) {
-            const contenedor = document.getElementById('productos');
-            const item = elemento.closest('.producto-item');
-            if (contenedor.children.length > 1) {
-                contenedor.removeChild(item);
-            } else {
-                alert("Debe haber al menos un producto.");
-            }
-        }
         // Auto-ocultar mensajes de éxito después de 5 segundos
         document.addEventListener('DOMContentLoaded', function() {
             const successAlerts = document.querySelectorAll('.alert.success');
             successAlerts.forEach(function(alert) {
                 setTimeout(function() {
-                    alert.classList.add('fade-out');
+                    alert.style.opacity = '0';
                     setTimeout(function() {
                         alert.remove();
-                    }, 500); // Esperar a que termine la animación
-                }, 5000); // 5 segundos
+                    }, 500);
+                }, 5000);
             });
         });
 
@@ -393,36 +293,6 @@
                 btn.classList.remove('active');
             }
         });
-
-        // FUNCIÓN COMENTADA PARA VERSIÓN FUTURA - Estado del doctor
-        /*
-        function actualizarEstado() {
-            const estado = document.getElementById("estado-doctor").value;
-        
-            fetch("/doctor/actualizar_estado/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: JSON.stringify({ estado: estado })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const feedback = document.getElementById("estado-feedback");
-                if (data.success) {
-                    feedback.textContent = "Estado actualizado.";
-                    setTimeout(() => feedback.textContent = "", 3000);
-                } else {
-                    feedback.textContent = "Error al actualizar estado.";
-                }
-            })
-            .catch(() => {
-                document.getElementById("estado-feedback").textContent = "Error de conexión.";
-            });
-        }
-        */
-
     </script>
 </body>
 </html>

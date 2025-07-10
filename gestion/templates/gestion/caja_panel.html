@@ -8,45 +8,109 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
     <style>
-    .switch {
+    .modern-switch {
       position: relative;
       display: inline-block;
-      width: 50px;
-      height: 26px;
+      width: 60px;
+      height: 32px;
     }
 
-    .switch input {
+    .modern-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
 
-    .slider {
+    .modern-slider {
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: 0.4s;
-      border-radius: 26px;
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      transition: all 0.3s ease;
+      border-radius: 32px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
-    .slider:before {
+    .modern-slider:before {
       position: absolute;
       content: "";
-      height: 20px; width: 20px;
+      height: 26px; 
+      width: 26px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
-      transition: 0.4s;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      transition: all 0.3s ease;
       border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
-    input:checked + .slider {
-      background-color: #28a745;
+    input:checked + .modern-slider {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     }
 
-    input:checked + .slider:before {
-      transform: translateX(24px);
+    input:checked + .modern-slider:before {
+      transform: translateX(28px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .modern-slider:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .refresh-btn {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .refresh-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    }
+
+    .refresh-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    }
+
+    .refresh-btn svg {
+        transition: transform 0.3s ease;
+    }
+
+    .refresh-btn:hover svg {
+        transform: rotate(180deg);
+    }
+
+    .control-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 12px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+    }
+
+    .control-label {
+        color: white;
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0;
+        white-space: nowrap;
     }
     .btn-success {
         --bs-btn-color: #fff;
@@ -65,11 +129,518 @@
         --bs-btn-disabled-border-color: #198754;
     }
 
+    .btn-historial {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 16px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 96%;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+        cursor: pointer;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-historial:hover {
+        background: linear-gradient(135deg, #218838 0%, #1dc7aa 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-historial:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+    }
+
+    .user-header-vertical {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+        margin-bottom: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        flex-direction: row;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info::before {
+        content: "💰";
+        font-size: 24px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .user-menu {
+        position: relative;
+    }
+
+    .user-menu-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        width: 44px;
+        height: 44px;
+    }
+
+    .user-menu-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .hamburger-icon {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-icon span {
+        width: 18px;
+        height: 2px;
+        background-color: #ffffff;
+        border-radius: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .user-menu-btn.active .hamburger-icon span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .user-menu-btn.active .hamburger-icon span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .user-menu-btn.active .hamburger-icon span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    .user-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 123, 255, 0.1);
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .user-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .user-dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        color: #495057;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        border-bottom: 1px solid #f1f3f5;
+        transition: all 0.2s ease;
+    }
+
+    .user-dropdown a:first-child {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .user-dropdown a:last-child {
+        border-bottom: none;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    .user-dropdown a:hover {
+        background: #f8f9fa;
+        color: #007bff;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+        .user-header-vertical {
+            padding: 12px 15px;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            justify-content: flex-start;
+        }
+
+        .user-menu-btn {
+            width: 48px;
+            height: 48px;
+            padding: 14px;
+        }
+
+        .hamburger-icon span {
+            width: 20px;
+            height: 3px;
+        }
+
+        .user-dropdown {
+            position: fixed;
+            top: auto;
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+            margin-top: 10px;
+        }
+
+        .user-dropdown a {
+            padding: 16px 20px;
+            font-size: 16px;
+        }
+
+        .caja-panel {
+            margin: 10px;
+            width: calc(100% - 20px);
+        }
+
+        /* Resetear anchos de columnas en móvil */
+        .modern-table th, 
+        .modern-table td {
+            width: auto !important;
+        }
+    }
+
+    /* Estilos mejorados para la tabla */
+    .table-container {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .table-header {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .table-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .table-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin: 0;
+    }
+
+    .modern-table thead {
+        background: #f8f9fa;
+    }
+
+    .modern-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: none;
+    }
+
+    .modern-table td {
+        padding: 20px;
+        vertical-align: top;
+        border-bottom: 1px solid #f1f3f5;
+        color: #495057;
+        line-height: 1.5;
+    }
+
+    /* Anchos específicos para columnas en PC */
+    .modern-table th:nth-child(1), 
+    .modern-table td:nth-child(1) { width: 18%; } /* Paciente */
+    
+    .modern-table th:nth-child(2), 
+    .modern-table td:nth-child(2) { width: 16%; } /* Tratamiento */
+    
+    .modern-table th:nth-child(3), 
+    .modern-table td:nth-child(3) { width: 12%; } /* Consultorio */
+    
+    .modern-table th:nth-child(4), 
+    .modern-table td:nth-child(4) { width: 16%; } /* Doctor */
+    
+    .modern-table th:nth-child(5), 
+    .modern-table td:nth-child(5) { width: 22%; } /* Productos */
+    
+    .modern-table th:nth-child(6), 
+    .modern-table td:nth-child(6) { width: 12%; } /* Origen */
+    
+    .modern-table th:nth-child(7), 
+    .modern-table td:nth-child(7) { width: 14%; } /* Acción */
+
+    .modern-table tr {
+        transition: all 0.2s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .patient-name {
+        font-weight: 600;
+        color: #007bff;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+    }
+
+    .treatment-info {
+        color: #6c757d;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 220px;
+    }
+
+    .doctor-info {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-block;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 220px;
+    }
+
+    .products-list {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 0;
+        max-width: 300px;
+        overflow-y: auto;
+        max-height: 120px;
+    }
+
+    .products-list li {
+        color: #495057;
+        margin-bottom: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .products-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .origin-badge {
+        background: linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-block;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        min-width: 140px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #218838 0%, #1dc7aa 100%);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .empty-state-text {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .empty-state-subtext {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    /* Responsive mejoras */
+    @media screen and (max-width: 768px) {
+        .table-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-group {
+            justify-content: center;
+        }
+
+        .refresh-btn {
+            padding: 14px 24px;
+            font-size: 15px;
+        }
+
+        .modern-switch {
+            width: 70px;
+            height: 36px;
+        }
+
+        .modern-slider:before {
+            height: 30px;
+            width: 30px;
+        }
+
+        input:checked + .modern-slider:before {
+            transform: translateX(34px);
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 12px 8px;
+            font-size: 13px;
+        }
+
+        .patient-name {
+            font-size: 14px;
+            max-width: 150px;
+        }
+
+        .treatment-info {
+            max-width: 130px;
+        }
+
+        .doctor-info {
+            font-size: 12px;
+            padding: 4px 8px;
+            max-width: 140px;
+        }
+
+        .origin-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            max-width: 120px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+    }
+
     </style>
 </head>
 <script>
     let autoRefresh = true;
-    let interval = setInterval(refrescarTabla, 5000);
+    let interval = setInterval(refrescarTabla, 3000);
 
     function refrescarTabla() {
         fetch("{% url 'caja_panel_ajax' %}")
@@ -86,69 +657,107 @@
 
         if (toggle.checked) {
             autoRefresh = true;
-            interval = setInterval(refrescarTabla, 5000);
+            interval = setInterval(refrescarTabla, 3000);
         } else {
             autoRefresh = false;
             clearInterval(interval);
         }
     }
+
+    // Función para manejar el menú desplegable de usuario
+    function toggleUserMenu() {
+        const dropdown = document.getElementById('userDropdown');
+        const btn = document.querySelector('.user-menu-btn');
+        
+        dropdown.classList.toggle('show');
+        btn.classList.toggle('active');
+    }
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const userMenu = document.querySelector('.user-menu');
+        const dropdown = document.getElementById('userDropdown');
+        const btn = document.querySelector('.user-menu-btn');
+        
+        if (!userMenu.contains(event.target)) {
+            dropdown.classList.remove('show');
+            btn.classList.remove('active');
+        }
+    });
 </script>
 
 
 <body>
-    <div class="login-box caja-panel" style="max-width: 1000px;">
+    <div class="login-box caja-panel" style="max-width: 1400px;">
+        
+        {% load usuario_tags %}
+        <div class="user-header-vertical">
+            <div class="user-info">
+                <strong>{{ request.user|nombre_completo }}</strong>
+            </div>
+            <div class="user-menu">
+                <button class="user-menu-btn" onclick="toggleUserMenu()">
+                    <div class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="{% url 'perfil_usuario' %}">👤 Mi perfil</a>
+                    <a href="{% url 'password_change' %}">🔒 Cambiar contraseña</a>
+                    <a href="{% url 'logout' %}">🚪 Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+
         <h2>Panel de Caja</h2>
 
-        <div class="user-header-vertical">
-            <span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span>
-            <span class="user-links">
-                <a href="{% url 'password_change' %}">Cambiar contraseña </a> |
-                <a href="{% url 'logout' %}">Cerrar sesión </a>
-            </span>
+        <div class="table-container">
+            <div class="table-header">
+                <h3 class="table-title">
+                    💰 Registros Pendientes de Pago
+                </h3>
+                <div class="table-controls">
+                    <div class="control-group">
+                        <span class="control-label">Auto actualizar</span>
+                        <label class="modern-switch" title="Actualizar Tabla Automaticamente">
+                            <input type="checkbox" id="toggle-refresh" checked onchange="toggleAutoRefresh()">
+                            <span class="modern-slider"></span>
+                        </label>
+                    </div>
+                    <button onclick="refrescarTabla()" id="btn-manual" title="Refrescar tabla" type="button" class="refresh-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"></path>
+                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"></path>
+                        </svg>
+                        <span>Refrescar</span>
+                    </button>
+                </div>
+            </div>
+
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Tratamiento</th>
+                        <th>Consultorio</th>
+                        <th>Doctor</th>
+                        <th>Productos</th>
+                        <th>Origen</th>
+                        <th style="text-align: center;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-caja-body">
+                    {% include 'gestion/_tabla_panel_caja.html' %}
+                </tbody>
+            </table>
         </div>
-        <div style="margin: 20px 0; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
-        
 
-            <!-- Toggle switch para activar/desactivar -->
-            <label class="switch" title="Actualizar Tabla Automaticamente">
-                <input type="checkbox" id="toggle-refresh" checked onchange="toggleAutoRefresh()">
-                <span class="slider round"></span>
-            </label>
-            <span style="font-size: 10px;"></span>
-                <button onclick="refrescarTabla()" id="btn-manual" title="Refrescar tabla" type="button" class="btn btn-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"></path>
-                      <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"></path>
-                        
-                    </svg>
-                    <span style="margin-left: 5px; ">Refrescar</span>
 
-              </button>
-        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'historial' %}" class="btn-historial">🧾 Ver historial de abonados</a>
         </div>
-
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Paciente</th>
-                    <th>Tratamiento</th>
-                    <th>Consultorio</th>
-                    <th>Doctor</th>
-                    <th>Productos</th>
-                    <th style="text-align: center;">Acción</th>
-                </tr>
-            </thead>
-        <tbody id="tabla-caja-body">
-            {% include 'gestion/_tabla_panel_caja.html' %}
-        </tbody>
-
-        </table>
-
-
-        <p style="text-align:center; margin-top: 20px;">
-            <a href="{% url 'historial' %}">Ver historial de abonados</a>
-        </p>
     </div>
 </body>
 </html>

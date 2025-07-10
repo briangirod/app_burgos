@@ -9,32 +9,188 @@
     <link rel="stylesheet" href="{% static 'gestion/styles.css' %}">
     <style>
         .caja-panel {
-            max-width: 1150px;
-            width: 95%;
+            max-width: 1600px;
+            width: 98%;
             padding: 40px;
             font-size: 15px;
         }
 
         .user-header-vertical {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            background-color: #f1f3f5;
-            padding: 10px 15px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-direction: row;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info::before {
+            content: "💰";
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 12px;
             border-radius: 8px;
-            font-size: 14px;
-            margin-bottom: 20px;
-            text-align: center;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            width: 44px;
+            height: 44px;
         }
 
-        .user-links a {
-            color: #007bff;
+        .user-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-icon span {
+            width: 18px;
+            height: 2px;
+            background-color: #ffffff;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn.active .hamburger-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .user-menu-btn.active .hamburger-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .user-menu-btn.active .hamburger-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .user-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #495057;
             text-decoration: none;
-            margin: 0 5px;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f3f5;
+            transition: all 0.2s ease;
         }
 
-        .user-links a:hover {
-            text-decoration: underline;
+        .user-dropdown a:first-child {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .user-dropdown a:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .user-dropdown a:hover {
+            background: #f8f9fa;
+            color: #007bff;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .user-header-vertical {
+                padding: 12px 15px;
+                gap: 15px;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .user-info {
+                justify-content: flex-start;
+            }
+
+            .user-menu-btn {
+                width: 48px;
+                height: 48px;
+                padding: 14px;
+            }
+
+            .hamburger-icon span {
+                width: 20px;
+                height: 3px;
+            }
+
+            .user-dropdown {
+                position: fixed;
+                top: auto;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                margin-top: 10px;
+            }
+
+            .user-dropdown a {
+                padding: 16px 20px;
+                font-size: 16px;
+            }
+
+            .caja-panel {
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
         }
 
         table {
@@ -170,11 +326,37 @@
             background-color: #5a6268;
         }
         
+        .table-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .tabla-scroll {
-            max-height: 500px; /* Ajustable para mostrar aprox. 10 filas */
+            max-height: 500px;
             overflow-y: auto;
-            border: 1px solid #ccc;
-            border-radius: 8px;
         }
         
         /* Evita que se corte el ancho si hay scroll */
@@ -183,6 +365,80 @@
             border-collapse: collapse;
         }
 
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            width: 96%;
+        }
+        
+        .btn-volver:hover {
+            background: linear-gradient(135deg, #218838 0%, #1dc7aa 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-volver:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-excel {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .btn-excel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #218838 0%, #1dc7aa 100%);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-excel:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-excel svg {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-excel:hover svg {
+            transform: scale(1.1);
+        }
         
     </style>
 </head>
@@ -190,12 +446,25 @@
     <div class="login-box caja-panel">
         <h2>Historial de productos abonados</h2>
 
+        {% load usuario_tags %}
         <div class="user-header-vertical">
-            <span><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></span>
-            <span class="user-links">
-                <a href="{% url 'password_change' %}">Cambiar contraseña</a> |
-                <a href="{% url 'logout' %}">Cerrar sesión</a>
-            </span>
+            <div class="user-info">
+                <strong>{{ request.user|nombre_completo }}</strong>
+            </div>
+            <div class="user-menu">
+                <button class="user-menu-btn" onclick="toggleUserMenu()">
+                    <div class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="{% url 'perfil_usuario' %}">👤 Mi perfil</a>
+                    <a href="{% url 'password_change' %}">🔒 Cambiar contraseña</a>
+                    <a href="{% url 'logout' %}">🚪 Cerrar sesión</a>
+                </div>
+            </div>
         </div>
 
         <!-- FILTROS -->
@@ -203,6 +472,7 @@
             <div class="filtros-labels">
                 <div class="filtro-label">Producto:</div>
                 <div class="filtro-label">Doctor:</div>
+                <div class="filtro-label">Abonado en:</div>
                 <div class="filtro-label">Desde:</div>
                 <div class="filtro-label">Hasta:</div>
                 <div class="filtro-label"></div>
@@ -220,7 +490,15 @@
                     <select name="doctor" id="doctor">
                         <option value="">-- Todos --</option>
                         {% for d in doctores %}
-                            <option value="{{ d.id }}" {% if d.id == doctor_filtro %}selected{% endif %}>{{ d.get_full_name|default:d.username }}</option>
+                            <option value="{{ d.id }}" {% if d.id == doctor_filtro %}selected{% endif %}>{{ d|nombre_completo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <select name="caja" id="caja">
+                        <option value="">-- Todas --</option>
+                        {% for c in cajas %}
+                            <option value="{{ c.id }}" {% if c.id == caja_filtro %}selected{% endif %}>{{ c.nombre }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -242,21 +520,26 @@
 
 
 
-        <!-- TOTAL -->
-        {% with total=0 %}
-            {% for registro in registros %}
-                {% for item in registro.productoutilizado_set.all %}
-                    {% if producto_filtro|lower in item.producto.nombre|lower or not producto_filtro %}
-                        {% with total=total|add:item.cantidad %}
-                        {% endwith %}
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-            <p><strong>Total de productos encontrados: {{ total }}</strong></p>
-        {% endwith %}
-
         <!-- TABLA -->
-        <div class="tabla-scroll">
+        <div class="table-container">
+            <div class="table-header">
+                <h3 class="table-title">
+                    📊 Historial de Productos Abonados
+                </h3>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="table-info">
+                        <span style="color: white; font-weight: 500;">Total: {{ total_registros }} registros</span>
+                    </div>
+                    <a href="{% url 'descargar_historial_excel' %}?producto={{ producto_filtro }}&doctor={{ doctor_filtro }}&caja={{ caja_filtro }}&desde={{ desde }}&hasta={{ hasta }}" class="btn-excel" title="Descargar historial en Excel">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.539a.5.5 0 0 0 .768-.64L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219 5.884 6.68z"/>
+                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                        </svg>
+                        <span>Excel</span>
+                    </a>
+                </div>
+            </div>
+            <div class="tabla-scroll">
             <table>
                 <thead>
                     <tr>
@@ -266,16 +549,17 @@
                         <th>Consultorio</th>
                         <th>Doctor</th>
                         <th>Productos</th>
+                        <th>Abonado en</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for registro in registros %}
                         <tr style="vertical-align: top;">
-                            <td>{{ registro.fecha }}</td>
+                            <td>{{ registro.fecha|date:"d/m/y" }}</td>
                             <td>{{ registro.nombre_paciente }}</td>
                             <td>{{ registro.tratamiento.nombre }}</td>
                             <td>{{ registro.consultorio.nombre }}</td>
-                            <td>{{ registro.doctor.get_full_name|default:registro.doctor.username }}</td>
+                            <td>{{ registro.doctor|nombre_completo }}</td>
                             <td>
                                 <div class="productos-contenedor">
                                     <ul>
@@ -286,17 +570,42 @@
                                     <span class="abonado-label">✔ Ya abonado</span>
                                 </div>
                             </td>
+                            <td>{{ registro.caja_destino.nombre }}</td>
                         </tr>
                     {% empty %}
-                        <tr><td colspan="6" style="text-align:center;">No hay registros abonados.</td></tr>
+                        <tr><td colspan="7" style="text-align:center;">No hay registros abonados.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
         </div>
 
-        <p style="text-align:center; margin-top: 20px;">
-            <a href="{% url 'panel_caja' %}">Volver al panel de caja</a>
-        </p>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'panel_caja' %}" class="btn-volver">🔙 Volver al panel de caja</a>
+        </div>
     </div>
+
+    <script>
+        // Función para manejar el menú desplegable de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            const btn = document.querySelector('.user-menu-btn');
+            
+            dropdown.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userDropdown');
+            const btn = document.querySelector('.user-menu-btn');
+            
+            if (!userMenu.contains(event.target)) {
+                dropdown.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
